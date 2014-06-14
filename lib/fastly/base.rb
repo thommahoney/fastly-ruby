@@ -5,57 +5,56 @@ class Fastly
 
     def initialize(opts, fetcher)
       @keys = []
-      opts.each do |key,val|
+      opts.each do |key, val|
         next unless self.respond_to? "#{key}="
-        self.send("#{key}=", val)
+        send("#{key}=", val)
         @keys.push(key)
       end
       self.fetcher = fetcher
-     end
+    end
 
-     # Save this object
-     def save!
-       fetcher.update(self.class, self)
-     end
+    # Save this object
+    def save!
+      fetcher.update(self.class, self)
+    end
 
-     # Delete this object
-     def delete!
-       fetcher.delete(self.class, self)
-     end
+    # Delete this object
+    def delete!
+      fetcher.delete(self.class, self)
+    end
 
-     ##
-     # :nodoc:
-     def as_hash
-       ret = {}
-       @keys.each do |key|
-         ret[key] = self.send("#{key}") unless key =~ /^_/;
-       end
-       ret
-     end
+    ##
+    # :nodoc:
+    def as_hash
+      ret = {}
+      @keys.each do |key|
+        ret[key] = send("#{key}") unless key =~ /^_/
+      end
+      ret
+    end
 
-     def self.path
-       Util.class_to_path(self)
-     end
+    def self.path
+      Util.class_to_path(self)
+    end
 
-     def self.get_path(id)
-       "/#{path}/#{id}"
-     end
+    def self.get_path(id)
+      "/#{path}/#{id}"
+    end
 
-     def self.post_path(opts={})
-       "/#{path}"
-     end
+    def self.post_path(_opts = {})
+      "/#{path}"
+    end
 
-     def self.list_path(opts={})
-       post_path(opts)
-     end
+    def self.list_path(opts = {})
+      post_path(opts)
+    end
 
-     def self.put_path(obj)
-       get_path(obj.id)
-     end
+    def self.put_path(object)
+      get_path(object.id)
+    end
 
-     def self.delete_path(obj)
-       put_path(obj)
-     end
-
+    def self.delete_path(object)
+      put_path(object)
+    end
   end
 end
