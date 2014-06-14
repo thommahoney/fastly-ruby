@@ -89,7 +89,7 @@ class Fastly
     end
 
     def headers
-      headers = fully_authed? ? { 'Cookie' => cookie } : { 'X-Fastly-Key' => api_key }
+      headers = fully_authed? ? { 'Cookie' => cookie } : { 'Fastly-Key' => api_key }
       headers.merge('Content-Accept' => 'application/json')
     end
 
