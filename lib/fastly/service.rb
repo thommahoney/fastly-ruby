@@ -27,7 +27,6 @@ class Fastly
     #
     # a free form comment field
 
-
     ##
     #
     # Get a hash of stats from different data centers.
@@ -37,10 +36,10 @@ class Fastly
     # * hourly
     # * daily
     # * all
-    def stats(type=:all, opts={})
-      raise Fastly::Error "Unknown stats type #{type}" unless [:minutely,:hourly,:daily,:all].include?(type.to_sym)
-      hash = fetcher.client.get(Fastly::Service.get_path(self.id)+"/stats/#{type}", opts)
-      return hash
+    def stats(type = :all, opts = {})
+      fail Fastly::Error "Unknown stats type #{type}" unless [:minutely, :hourly, :daily, :all].include?(type.to_sym)
+      hash = fetcher.client.get(Fastly::Service.get_path(id) + "/stats/#{type}", opts)
+      hash
     end
 
     # Return a Invoice object representing the invoice for this service
@@ -48,8 +47,8 @@ class Fastly
     # If a year and month are passed in returns the invoice for that whole month.
     #
     # Otherwise it returns the invoice for the current month so far.
-    def invoice(year=nil, month=nil)
-      opts = { :service_id => self.id }
+    def invoice(year = nil, month = nil)
+      opts = { :service_id => id }
       unless year.nil? || month.nil?
         opts[:year]  = year
         opts[:month] = month
@@ -59,33 +58,30 @@ class Fastly
 
     # Purge all assets from this service.
     def purge_all
-      res = fetcher.client.post(Fastly::Service.get_path(self.id)+"/purge_all")
+      res = fetcher.client.post(Fastly::Service.get_path(id) + '/purge_all')
     end
-
 
     # Purge anything with the specific key from the given service.
     def purge_by_key(key)
-       res = fetcher.client.post(Fastly::Service.get_path(self.id)+"/purge/#{key}")
+      res = fetcher.client.post(Fastly::Service.get_path(id) + "/purge/#{key}")
     end
 
     # Set all the versions that this service has had.
-    def versions=(versions)
-      @versions = versions
-    end
+    attr_writer :versions
 
     # Get a sorted array of all the versions that this service has had.
     def versions
-      @versions.map { |v| Fastly::Version.new(v, fetcher) }.sort { |a,b| a.number.to_i <=> b.number.to_i }
+      @versions.map { |v| Fastly::Version.new(v, fetcher) }.sort { |a, b| a.number.to_i <=> b.number.to_i }
     end
 
     # Get an individual Version object. By default returns the latest version
-    def version(number=-1)
+    def version(number = -1)
       versions[number]
     end
 
     # A deep hash of nested details
-    def details(opts={})
-      fetcher.client.get(Fastly::Service.get_path(self.id)+"/details", opts);
+    def details(opts = {})
+      fetcher.client.get(Fastly::Service.get_path(id) + '/details', opts)
     end
 
     # Get the Customer object for this Service
@@ -105,7 +101,7 @@ class Fastly
   #   service = fastly.search_services(:name => name, :version => number)
   def search_services(opts)
     klass = Fastly::Service
-    hash  = client.get(klass.post_path+"/search", opts)
+    hash  = client.get(klass.post_path + '/search', opts)
     return nil if hash.nil?
     klass.new(hash, self)
   end

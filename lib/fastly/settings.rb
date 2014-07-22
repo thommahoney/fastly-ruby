@@ -31,23 +31,23 @@ class Fastly
     end
 
     # :nodoc:
-    def self.list_path(opts={})
+    def self.list_path(_opts = {})
       nil
     end
 
     # :nodoc:
     def self.post_path
-      raise "You can't POST to an setting"
+      fail "You can't POST to an setting"
     end
 
     # :nodoc:
     def self.delete_path
-      raise "You can't DELETE to an setting"
+      fail "You can't DELETE to an setting"
     end
 
     # :nodoc:
     def delete!
-      raise "You can't delete an invoice"
+      fail "You can't delete an invoice"
     end
 
     # :nodoc:
@@ -62,13 +62,13 @@ class Fastly
     hash             = client.get(Fastly::Settings.get_path(service, number))
 
     return nil if hash.nil?
-    hash["settings"] = Hash[["general.default_host", "general.default_ttl"].collect { |var| [var, hash.delete(var)] }]
+    hash['settings'] = Hash[['general.default_host', 'general.default_ttl'].collect { |var| [var, hash.delete(var)] }]
 
-    return klass.new(hash, self)
+    klass.new(hash, self)
   end
 
   # Update the Settings object for the specified Version
-  def update_settings(opts={})
+  def update_settings(opts = {})
     update(Fastly::Settings, opts)
   end
 end

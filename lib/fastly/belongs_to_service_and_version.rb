@@ -6,9 +6,7 @@ class Fastly
     end
 
     # Set the Version object this belongs to
-    def version=(version)
-      @version = version
-    end
+    attr_writer :version
 
     # Get the Version object this belongs to
     def version
@@ -22,12 +20,12 @@ class Fastly
 
     # :nodoc:
     def as_hash
-      super.delete_if { |var| ["service_id", "version"].include?(var) }
+      super.delete_if { |var| %w(service_id version).include?(var) }
     end
 
     private
 
-    def self.get_path(service, version, name, options={})
+    def self.get_path(service, version, name, _options = {})
       "/service/#{service}/version/#{version}/#{path}/#{name}"
     end
 
@@ -36,12 +34,11 @@ class Fastly
     end
 
     def self.put_path(obj)
-      get_path(obj.service_id, obj.version_number,obj.name)
+      get_path(obj.service_id, obj.version_number, obj.name)
     end
 
     def self.delete_path(obj)
       put_path(obj)
     end
-
   end
 end
